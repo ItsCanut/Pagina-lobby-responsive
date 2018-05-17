@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="../index.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+</head>
+
+<body>
+
+
+
+
+
+    <section class="mainBox">
+        <a href="InicioSesion.html"><img src="/Imagenes/logoGTI.svg" alt="Logo GTI">
+        </a>
+        <div>
+            <h2>Recuperar contraseña</h2>
+        </div>
+
+        <p id="recuperarContra"><strong>Introduce tu e-mail y recibirás un correo con una nueva contraseña</strong></p>
+        </div>
+        <div>
+            <form onsubmit="getCorreo()" method="get" action="/paginas/InicioSesion.html">
+                E-mail:<br>
+                <input type="text" id="email" name="email"><br>
+                <input class="button" type=submit value=Enviar><br>
+
+            </form>
+        </div>
+    </section>
+
+    <footer>Copyright © Grupo 2 grado GTI</footer>
+
+    <script type="text/javascript">
+      function getCorreo() {
+        let email = document.getElementById('email').value;
+        fetch('/recuperarContrasenya?email=' + email);
+      }
+    </script>
+
+
+</body>
+
+</html>

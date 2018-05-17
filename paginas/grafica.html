@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Gráfica</title>
+  <script src=https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js></script>
+
+</head>
+
+<body>
+  <canvas id="gráfica"></canvas>
+  <button type="button" onclick="dameMedidas('temperatura', 'red', -20, 60, '')">Dame temperatura</button>
+  <button type="button" onclick="dameMedidas('humedad', 'blue', 0 , 100, 'Humedad')">Dame humedad</button>
+  <script>
+    Chart.defaults.global.animationEasing = "easeOutBounce";
+
+    var abcisa = [];
+    var ordenada = [];
+    var colorLineaGrafica = 'red';
+
+
+    var ctx = document.getElementById("gráfica").getContext("2d");
+
+    var barChart = new Chart(ctx, {
+      options: {
+        responsive: true,
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true,
+              min: 0,
+              max: 100
+            } //ticks
+          }] //yAxes
+        } //scales
+      }, //options
+      type: 'line',
+      data: {
+        labels: abcisa,
+        datasets: [{
+          label: 'default',
+          fill: false,
+          data: ordenada,
+          backgroundColor: null,
+          borderColor: null
+        }] //datasets
+      } //data
+    }); //newChart
+
+    function enteroRandom() {
+      return Math.floor(Math.random() * 51);
+    }
+
+
+    function dameMedidas(medicion, color, minOr, maxOr, magn) {
+      fetch('/getMedidas?magnitud=' + medicion).then(function(res) {
+        if (res.status == 404) {
+          alert('Error del servidor')
+        } else {
+          return res.json();
+        } //else
+      }).then(function(med) {
+        barChart.data.datasets[0].backgroundColor = color;
+        barChart.data.datasets[0].borderColor = color;
+        barChart.options.scales.yAxes[0].ticks.min = minOr;
+        barChart.options.scales.yAxes[0].ticks.max = maxOr;
+        barChart.data.datasets[0].label = magn;
+
+        for (let i = 0; i < 11; i++) {
+          ordenada[i] = Object.values(med.ordenada[i])[0];
+          abcisa[i] = med.abcisa[i].tiempo.split(' ')[1];
+        } //for
+
+        barChart.update();
+      }) //then
+    } //dameMedidas
+  </script>
+</body>
+
+</html>

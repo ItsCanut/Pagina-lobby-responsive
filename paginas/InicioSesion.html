@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link rel="stylesheet" type="text/css" href="../index.css">
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+</head>
+
+<body>
+
+  <section class="mainBox">
+    <img src="../Imagenes/logoGTI.svg" alt="Logo GTI">
+    <div class='banner'>
+      <h2>Inicio de sesión</h2>
+
+    </div>
+    <div>
+
+      <form id="formulario" action='lobby.html' method="get">
+        Email:<br>
+        <input type="text" id="email"><br> Contraseña:
+        <br>
+
+        <input type="password" id="password"><br>
+        <button id="boton_acceder" type="button" onclick="procesarLogin()" value=Acceder>Acceder</button>
+        <br>
+
+        <a style="" href="recuperarContrase%C3%B1a.html">¿Has olvidado tu contraseña?</a><br>
+        <p style="visibility: hidden" id="mensajeError">Es obligatorio rellenar los campos</p>
+      </form>
+
+
+    </div>
+  </section>
+  <script>
+    function procesarLogin() {
+      var email = document.getElementById("email").value;
+      var contrasenya = document.getElementById("password").value;
+      if (email == "" || contrasenya == "") {
+        errorForm('Es obligatorio rellenar todos los campos');
+      } else {
+        fetch('/login?email=' + email + '&password=' + contrasenya, {
+          method: 'post'
+        }).then(function(respuesta) {
+          return respuesta.json();
+        }).then(function(son) {
+          if (son.status == 404 || son.status == 401) {
+            errorForm('Usuario o contraseña incorrecta');
+          } else {
+            sessionStorage.setItem('Usuario', JSON.stringify(son));
+            console.log(son.usuario.activo);
+            if (son.usuario.activo == 0) {
+              fetch('/volverUsuarioActivo?id=' + son.usuario.id, {
+                method: 'post'
+              });
+              window.location.href = 'RestablecerContraseña.html';
+
+            } else {
+              window.location.href = "lobby.html";
+            } //else
+          } //else
+        }) //then
+      } //else
+    } //procesarLogin
+
+    function errorForm(error) {
+      document.getElementById('mensajeError').innerHTML = error;
+      document.getElementById('mensajeError').style.visibility = 'visible';
+    }
+    
+  </script>
+
+  <footer>Copyright © Grupo 2 grado GTI</footer>
+
+
+</body>
+
+</html>
